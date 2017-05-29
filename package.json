@@ -1,0 +1,80 @@
+{
+    "name": "aght-lazy-db",
+    "version": "0.0.1",
+    "description": "AGHT data base",
+    "author": "Douman",
+    "license": "MIT",
+    "repository": "github:DoumanAsh/aght-lazy-db",
+    "scripts": {
+        "lint": "eslint src/ ",
+        "lint:css": "stylelint src/**/*.sss ",
+        "prelint:all": "npm run lint:css",
+        "lint:all": "npm run lint",
+
+        "test": "ava --verbose",
+
+        "build": "webpack",
+        "build:p": "webpack -p",
+        "build:profile": "webpack --profile --json > stats.json",
+        "build:analyze": "webpack-bundle-analyzer stats.json",
+        "build:s": "webpack-dev-server"
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+        "ava": "*",
+        "jsdom": "*",
+
+        "webpack": "*",
+        "webpack-dev-server": "*",
+
+        "html-webpack-plugin": "*",
+        "script-ext-html-webpack-plugin": "*",
+        "pug": "^2.0.0-rc.1",
+        "pug-loader": "*",
+
+        "file-loader": "*",
+        "json5-loader": "*",
+
+        "eslint": "*",
+        "eslint-plugin-compat": "*",
+        "eslint-loader": "*",
+
+        "babel-core": "*",
+        "babel-plugin-inferno": "*",
+        "babel-preset-es2015": "*",
+        "babel-plugin-transform-object-rest-spread": "*",
+        "babel-loader": "*",
+
+        "css-loader": "*",
+        "postcss-loader": "*",
+        "postcss-import": "*",
+        "postcss-nesting": "*",
+        "sugarss": "*",
+        "stylelint": "*",
+        "stylelint-config-standard": "*",
+        "autoprefixer": "*"
+    },
+
+    "ava": {
+        "files": [
+            "test/**/*.js"
+        ],
+        "source": [
+            "src/**/*.js"
+        ],
+        "failFast": true
+    },
+
+    "babel": {
+        "presets": [
+            ["es2015", {"modules": false}]
+        ],
+        "plugins": ["transform-object-rest-spread"]
+    },
+
+    "browserslist": [
+        "Last 2 versions",
+        "ie 11"
+    ]
+}

@@ -1,0 +1,19 @@
+include _common.pug
++head
+
+body.main
+    ul.tree(id="object-tree")
+        li.tree__element="First element"
+        li.tree__element="Second element"
+            ul.tree__sub
+                li.tree__element="Sub item 1"
+                li.tree__element="Sub item 2"
+        li.tree__element="Third element"
+
+    div.context-menu.hidden(id="tree-menu")
+        a.context-menu__item()="Add element"
+        a.context-menu__item()="Add child"
+        a.context-menu__item()="Edit"
+        a.context-menu__item()="Delete"
+
++inline_style([require('../styles/common.sss'), require('../styles/context.sss'), require('../styles/tree.sss')])

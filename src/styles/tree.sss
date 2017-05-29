@@ -1,0 +1,29 @@
+.tree
+    padding: 0
+    margin: 0
+
+.tree__element
+    list-style-type: none
+    margin-left: 1em
+    padding-left: 1em
+    position: relative
+
+    &::before
+        display: block
+        position: absolute
+        background: #333
+        content: ' '
+        top: 0
+        bottom: 0
+        left: -0.275em
+        width: 0.1em
+
+    &::after
+        content: ''
+        display: block
+        position: absolute
+        top: 0.5em
+        left: -0.2em
+        width: 0.75em
+        height: 0.1em
+        background: #333
