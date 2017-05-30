@@ -76,14 +76,92 @@ test.serial('edit some element', async t => {
     //Start edit
     UI.context_menu.children[2].click();
     t.true(UI.context_menu.className.includes('hidden'));
-    const element_input = element.children[0];
+    let element_input = element.children[0];
     t.not(element_input, undefined);
+    t.is(element_input.nodeName.toLowerCase(), "input");
     t.is(element_value, element_input.value);
 
-    //Change element and stop editing.
+    //Change element
     element_input.value = element_new_value;
     const enter_event = create_enter_event();
+
+    const non_enter_key = new window.KeyboardEvent("keyup", {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+        keyCode: 14,
+    });
+
+    //Try to finish editing by non-Enter. Should fail
+    element_input.dispatchEvent(non_enter_key);
+    element_input = element.children[0];
+    t.not(element_input, undefined);
+    t.is(element_input.nodeName.toLowerCase(), "input");
+
+    //Press Enter to finish
     element_input.dispatchEvent(enter_event);
+    element_input = element.children[0];
+    t.not(element_input, undefined);
+    t.not(element_input.nodeName.toLowerCase(), "input");
+    t.is(element.childNodes[0].textContent, element_new_value);
+});
+
+test.serial('finish edit by saving', async t => {
+    const element = UI.tree.children[1];
+    const element_value = get_element_text(element);
+    const element_new_value = element_value + ' appended something...';
+    const context_event = create_mouse_event("contextmenu");
+
+    //Select element
+    element.dispatchEvent(context_event);
+    t.false(UI.context_menu.className.includes('hidden'));
+
+    //Start edit
+    UI.context_menu.children[2].click();
+    t.true(UI.context_menu.className.includes('hidden'));
+    let element_input = element.children[0];
+    t.not(element_input, undefined);
+    t.is(element_input.nodeName.toLowerCase(), "input");
+    t.is(element_value, element_input.value);
+
+    //Change element
+    element_input.value = element_new_value;
+
+    //Click something else to finish editing
+    UI.tree_menu.children[0].click();
+    element_input = element.children[0];
+    t.not(element_input, undefined);
+    t.not(element_input.nodeName.toLowerCase(), "input");
+    t.is(element.childNodes[0].textContent, element_new_value);
+
+});
+
+test.serial('finish edit by click', async t => {
+    const element = UI.tree.children[1];
+    const element_value = get_element_text(element);
+    const element_new_value = element_value + ' appended something...';
+    const context_event = create_mouse_event("contextmenu");
+
+    //Select element
+    element.dispatchEvent(context_event);
+    t.false(UI.context_menu.className.includes('hidden'));
+
+    //Start edit
+    UI.context_menu.children[2].click();
+    t.true(UI.context_menu.className.includes('hidden'));
+    let element_input = element.children[0];
+    t.not(element_input, undefined);
+    t.is(element_input.nodeName.toLowerCase(), "input");
+    t.is(element_value, element_input.value);
+
+    //Change element
+    element_input.value = element_new_value;
+
+    //Click something else to finish editing
+    UI.tree.children[0].click();
+    element_input = element.children[0];
+    t.not(element_input, undefined);
+    t.not(element_input.nodeName.toLowerCase(), "input");
     t.is(element.childNodes[0].textContent, element_new_value);
 });
 
@@ -125,7 +203,7 @@ test.serial('add & remove element', async t => {
     }
 });
 
-test.serial('add child element', async t => {
+test.serial('add & delete child elements', async t => {
     const element = UI.tree.children[0];
     const element_children_len = element.children.length;
     //There is supposed to be no elements!
@@ -182,6 +260,19 @@ test.serial('add child element', async t => {
 
     t.is(child_element.children.length, 0);
     t.is(child_element.childNodes[0].textContent, child_element_value);
+
+    //Remove second created element.
+    child_element.dispatchEvent(context_event);
+    UI.context_menu.children[3].click();
+    t.is(sub_list.children.length, 1);
+
+    //Remove first created element.
+    sub_list.children[0].dispatchEvent(context_event);
+    UI.context_menu.children[3].click();
+    t.is(sub_list.children.length, 0);
+
+    //Sub-list is removed after all elementes are deleted
+    t.is(element_children_len, element.children.length);
 });
 
 test.serial('save & load', async t => {

@@ -12,6 +12,7 @@
         "lint:all": "npm run lint",
 
         "test": "ava --verbose",
+        "coverage": "node ./node_modules/nyc/bin/nyc.js node  ./node_modules/ava/cli.js",
 
         "build": "webpack",
         "build:p": "webpack -p",
@@ -23,6 +24,7 @@
     },
     "devDependencies": {
         "ava": "*",
+        "nyc": "*",
         "jsdom": "*",
         "node-storage-shim": "*",
 
@@ -65,6 +67,17 @@
             "src/**/*.js"
         ],
         "failFast": true
+    },
+    "nyc": {
+        "all": true,
+        "include": [
+            "src/**/*.js"
+        ],
+        "reporter": [
+            "html",
+            "text",
+            "lcov"
+        ]
     },
 
     "babel": {

@@ -3,3 +3,7 @@ node_modules/
 
 # webpack output folder.
 public/
+
+# nyc
+coverage/
+.nyc_output/
