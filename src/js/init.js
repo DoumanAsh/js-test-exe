@@ -61,7 +61,8 @@ UI.tree_actions.add_element.addEventListener('click', function() {
 });
 
 UI.tree_actions.add_child.addEventListener('click', function() {
-    const list = create_sub_list(UI.selection);
+    //Re-use existing sub-list
+    const list = UI.selection.children.length === 0 ? create_sub_list(UI.selection) : UI.selection.children[0];
 
     UI.selection = create_element(list);
     UI.start_edit();
@@ -113,12 +114,12 @@ function load() {
     const value = localStorage.getItem(STATE);
     if (value === null) return;
 
+    UI.tree.click();
+
     deserialize(UI.tree, value);
 }
 
 UI.tree_actions.save.addEventListener('click', save);
 UI.tree_actions.load.addEventListener('click', load);
-
-window.onbeforeunload = save;
 
 load();

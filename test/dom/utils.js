@@ -56,3 +56,29 @@ test('edit & save element', async t => {
     t.is(input.parentNode, null);
     t.is(result.innerHTML, new_value);
 });
+
+test('edit & save element with children', async t => {
+    const element_value = "test";
+    const element = create_element();
+    element.innerHTML = element_value;
+
+    const child = create_sub_list(element);
+    const sub_element = create_element();
+    sub_element.innerHTML = "sub-tt";
+
+    const input = make_element_editable(element);
+    t.is(input.type, 'text');
+    t.is(input.parentNode, element);
+    t.is(input.value, element_value);
+    t.false(element.innerHTML.startsWith(element_value));
+
+    select_input_text(input);
+    t.is(input, document.activeElement);
+    const new_value = `Prepended to ${element_value}`;
+    input.value = new_value;
+
+    const result = make_editable_static(input);
+    t.is(result, element);
+    t.is(input.parentNode, null);
+    t.is(result.childNodes[0].textContent, new_value);
+});

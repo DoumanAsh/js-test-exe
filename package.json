@@ -24,6 +24,7 @@
     "devDependencies": {
         "ava": "*",
         "jsdom": "*",
+        "node-storage-shim": "*",
 
         "webpack": "*",
         "webpack-dev-server": "*",

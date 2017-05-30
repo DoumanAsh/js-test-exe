@@ -53,10 +53,25 @@ export function destroy_element(element) {
 export function make_element_editable(element) {
     let input = document.createElement('input');
     input.type = 'text';
-    input.value = element.innerHTML;
 
-    element.innerHTML = '';
-    element.appendChild(input);
+    if (element.childNodes.length === 0) {
+        //Newly created empty element
+        input.value = '';
+        element.appendChild(input);
+    }
+    else if (element.children.length === 0) {
+        //No sub elements
+        input.value = element.innerHTML;
+        element.innerHTML = '';
+        element.appendChild(input);
+    }
+    else {
+        //Some children elements...
+        input.value = element.childNodes[0].textContent;
+        element.childNodes[0].textContent = '';
+        element.insertBefore(input, element.children[0]);
+    }
+
 
     return input;
 }
@@ -71,7 +86,12 @@ export function make_editable_static(element) {
     const parent = element.parentNode;
 
     parent.removeChild(element);
-    parent.innerHTML = value;
+
+    if (parent.childNodes.length === 0) {
+        parent.innerHTML = value;
+    } else {
+        parent.childNodes[0].textContent = value;
+    }
 
     return parent;
 }
