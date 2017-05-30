@@ -101,6 +101,10 @@ const STATE = "current_state";
 
 //Saves state of object tree before leaving page.
 function save() {
+    if (UI.editable !== null) {
+        UI.stop_edit();
+    }
+
     localStorage.setItem(STATE, serialize(UI.tree));
 }
 

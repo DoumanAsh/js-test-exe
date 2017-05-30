@@ -1,10 +1,10 @@
 {
-    "name": "aght-lazy-db",
+    "name": "js-test-exe",
     "version": "0.0.1",
-    "description": "AGHT data base",
+    "description": "Some js test exercise",
     "author": "Douman",
     "license": "MIT",
-    "repository": "github:DoumanAsh/aght-lazy-db",
+    "repository": "github:DoumanAsh/js-test-exe",
     "scripts": {
         "lint": "eslint src/ ",
         "lint:css": "stylelint src/**/*.sss ",
