@@ -2,6 +2,9 @@ include _common.pug
 +head
 
 body.main
+    nav.menu(id="object-tree-menu")
+        a.button="Save"
+        a.button="Load"
     ul.tree(id="object-tree")
         li.tree__element="First element"
         li.tree__element="Second element"
@@ -10,7 +13,7 @@ body.main
                 li.tree__element="Sub item 2"
         li.tree__element="Third element"
 
-    div.context-menu.hidden(id="tree-menu")
+    div.context-menu.hidden(id="context-menu")
         a.context-menu__item()="Add element"
         a.context-menu__item()="Add child"
         a.context-menu__item()="Edit"

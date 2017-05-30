@@ -8,6 +8,7 @@ before_script:
 script:
   - npm run lint:all
   - npm run build:p
+  - npm run test
 
 after_success:
   - bash -x ./ci/update_page.sh
