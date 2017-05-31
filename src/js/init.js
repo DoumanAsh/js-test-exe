@@ -50,7 +50,8 @@ UI.tree_actions = {
     edit: UI.context_menu.children[2],
     delete: UI.context_menu.children[3],
     save: UI.tree_menu.children[0],
-    load: UI.tree_menu.children[1]
+    load: UI.tree_menu.children[1],
+    clear_save: UI.tree_menu.children[2]
 };
 
 UI.tree_actions.add_element.addEventListener('click', function() {
@@ -101,7 +102,6 @@ UI.tree.addEventListener('contextmenu', function(event) {
     event.stopPropagation();
     stop_current_actions();
 
-    console.log(event.target);
     //In some cases Our target may be sub-list of element (when clicking left empty space).
     //Since I'm rather lazy we shall go with using its parent rather than  attempting to calculate
     //position of elemen right to the position click.
@@ -133,8 +133,13 @@ function load() {
     deserialize(UI.tree, value);
 }
 
+function clear_save() {
+    localStorage.removeItem(STATE);
+}
+
 UI.tree_actions.save.addEventListener('click', save);
 UI.tree_actions.load.addEventListener('click', load);
+UI.tree_actions.clear_save.addEventListener('click', clear_save);
 
 //It as assumed that script is loaded after DOM has been constructed.
 load();

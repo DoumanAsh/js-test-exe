@@ -237,8 +237,9 @@ test.serial('add & delete child elements', async t => {
     t.is(child_element.children.length, 0);
     t.is(child_element.childNodes[0].textContent, child_element_value);
 
-    //Create one more child
-    element.dispatchEvent(context_event);
+    //Create one more child through selecting sub-list
+    //It should select its parent element and create new element in the same sub-list
+    sub_list.dispatchEvent(context_event);
     t.false(UI.context_menu.className.includes('hidden'));
     UI.context_menu.children[1].click();
     t.true(UI.context_menu.className.includes('hidden'));
@@ -307,6 +308,41 @@ test.serial('save & load', async t => {
     t.is(original_tree, UI.tree.innerHTML);
 });
 
+test.serial('save & clear & load', async t => {
+    //save
+    UI.tree_menu.children[0].click();
+    const original_tree = UI.tree.innerHTML;
+
+    //Perform Edit
+    const element = UI.tree.children[1];
+    const element_value = get_element_text(element);
+    const element_new_value = element_value + ' appended something...';
+    const context_event = create_mouse_event("contextmenu");
+
+    element.dispatchEvent(context_event);
+    t.false(UI.context_menu.className.includes('hidden'));
+
+    //Start edit
+    UI.context_menu.children[2].click();
+    t.true(UI.context_menu.className.includes('hidden'));
+    const element_input = element.children[0];
+    t.not(element_input, undefined);
+    t.is(element_value, element_input.value);
+
+    //Change element and stop editing.
+    element_input.value = element_new_value;
+    const enter_event = create_enter_event();
+    element_input.dispatchEvent(enter_event);
+    t.is(element.childNodes[0].textContent, element_new_value);
+
+    //Clear save
+    UI.tree_menu.children[2].click();
+
+    //load button should not be able to load anything.
+    UI.tree_menu.children[1].click();
+    t.not(original_tree, UI.tree.innerHTML);
+});
+
 test.serial('try to add empty element', async t => {
     const element = UI.tree.children[0];
     const tree_len = UI.tree.children.length;
@@ -333,4 +369,9 @@ test.serial('try to add empty element', async t => {
 
     //Len should not be changed.
     t.is(tree_len, UI.tree.children.length);
+});
+
+test.serial('Select of Tree container should not trigger contextmenu', async t => {
+    UI.tree.dispatchEvent(create_mouse_event("contextmenu"));
+    t.true(UI.context_menu.className.includes('hidden'));
 });
