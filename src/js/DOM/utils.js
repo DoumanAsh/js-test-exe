@@ -87,7 +87,10 @@ export function make_editable_static(element) {
 
     parent.removeChild(element);
 
-    if (parent.childNodes.length === 0) {
+    if (value === '') {
+        parent.parentNode.removeChild(parent);
+    }
+    else if (parent.childNodes.length === 0) {
         parent.innerHTML = value;
     } else {
         parent.childNodes[0].textContent = value;

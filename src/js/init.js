@@ -76,22 +76,36 @@ UI.tree_actions.delete.addEventListener('click', function() {
     UI.remove_selection();
 });
 
-//Closes context menu on left-click
-UI.tree.addEventListener('click', function() {
+/**
+ * Stop selection and edit.
+ * @returns {void}
+ */
+function stop_current_actions() {
     if (UI.selection !== null) {
         UI.hide_menu();
     }
     if (UI.editable !== null) {
         UI.stop_edit();
     }
-});
+}
+
+//Closes context menu on left-click
+UI.tree.addEventListener('click', stop_current_actions);
 
 //Opens context menu relative to mouse pointer position.
 UI.tree.addEventListener('contextmenu', function(event) {
+    //Skip on container.
+    if (event.target === UI.tree) return;
+
     event.preventDefault();
     event.stopPropagation();
+    stop_current_actions();
 
-    UI.selection = event.target;
+    console.log(event.target);
+    //In some cases Our target may be sub-list of element (when clicking left empty space).
+    //Since I'm rather lazy we shall go with using its parent rather than  attempting to calculate
+    //position of elemen right to the position click.
+    UI.selection = event.target.classList.contains("tree__sub") ? event.target.parentNode : event.target;
 
     UI.context_menu.style.left = event.clientX + 'px';
     UI.context_menu.style.top = event.clientY + 'px';
@@ -122,4 +136,5 @@ function load() {
 UI.tree_actions.save.addEventListener('click', save);
 UI.tree_actions.load.addEventListener('click', load);
 
+//It as assumed that script is loaded after DOM has been constructed.
 load();

@@ -306,3 +306,31 @@ test.serial('save & load', async t => {
     UI.tree_menu.children[1].click();
     t.is(original_tree, UI.tree.innerHTML);
 });
+
+test.serial('try to add empty element', async t => {
+    const element = UI.tree.children[0];
+    const tree_len = UI.tree.children.length;
+
+    const context_event = create_mouse_event("contextmenu");
+    element.dispatchEvent(context_event);
+    t.false(UI.context_menu.className.includes('hidden'));
+
+    //Add element
+    UI.context_menu.children[0].click();
+    t.true(UI.context_menu.className.includes('hidden'));
+
+    //Verify that new element is added and is currently editable.
+    t.is(tree_len + 1, UI.tree.children.length);
+    const new_element = UI.tree.children[tree_len];
+    t.not(new_element, undefined);
+    t.is(new_element.nodeName.toLowerCase(), "li");
+    let new_element_input = new_element.children[0];
+    t.not(new_element_input, undefined);
+    t.is(new_element_input.nodeName.toLowerCase(), "input");
+
+    //Finish edit without any value.
+    new_element_input.dispatchEvent(create_enter_event());
+
+    //Len should not be changed.
+    t.is(tree_len, UI.tree.children.length);
+});
