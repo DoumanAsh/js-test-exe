@@ -165,6 +165,41 @@ test.serial('finish edit by click', async t => {
     t.is(element.childNodes[0].textContent, element_new_value);
 });
 
+test.serial('finish edit by right click', async t => {
+    const element = UI.tree.children[1];
+    const element_value = get_element_text(element);
+    const element_new_value = element_value + ' appended something...';
+    const context_event = create_mouse_event("contextmenu");
+
+    //Select element
+    element.dispatchEvent(context_event);
+    t.false(UI.context_menu.className.includes('hidden'));
+
+    //Start edit
+    UI.context_menu.children[2].click();
+    t.true(UI.context_menu.className.includes('hidden'));
+    let element_input = element.children[0];
+    t.not(element_input, undefined);
+    t.is(element_input.nodeName.toLowerCase(), "input");
+    t.is(element_value, element_input.value);
+
+    //Change element
+    element_input.value = element_new_value;
+
+    //Right Click something else to finish editing
+    UI.tree.children[0].dispatchEvent(context_event);
+    element_input = element.children[0];
+    t.not(element_input, undefined);
+    t.not(element_input.nodeName.toLowerCase(), "input");
+    t.is(element.childNodes[0].textContent, element_new_value);
+
+    t.false(UI.context_menu.className.includes('hidden'));
+
+    //Reset contextmenu menu
+    UI.tree.click();
+    t.true(UI.context_menu.className.includes('hidden'));
+});
+
 test.serial('add & remove element', async t => {
     const tree_len = UI.tree.children.length;
     const element = UI.tree.children[0];
@@ -364,11 +399,59 @@ test.serial('try to add empty element', async t => {
     t.not(new_element_input, undefined);
     t.is(new_element_input.nodeName.toLowerCase(), "input");
 
+    //Try clicks over input. It should do nothing
+    new_element_input.dispatchEvent(context_event);
+    t.true(UI.context_menu.className.includes('hidden'));
+    t.is(new_element_input.parentNode, new_element);
+    t.is(tree_len + 1, UI.tree.children.length);
+    new_element_input.click();
+    t.is(new_element_input.parentNode, new_element);
+    t.is(tree_len + 1, UI.tree.children.length);
+
     //Finish edit without any value.
     new_element_input.dispatchEvent(create_enter_event());
 
     //Len should not be changed.
     t.is(tree_len, UI.tree.children.length);
+});
+
+test.serial('try to add element with spaces only', async t => {
+    const element = UI.tree.children[0];
+    const tree_len = UI.tree.children.length;
+
+    const context_event = create_mouse_event("contextmenu");
+    element.dispatchEvent(context_event);
+    t.false(UI.context_menu.className.includes('hidden'));
+
+    //Add element
+    UI.context_menu.children[0].click();
+    t.true(UI.context_menu.className.includes('hidden'));
+
+    //Verify that new element is added and is currently editable.
+    t.is(tree_len + 1, UI.tree.children.length);
+    const new_element = UI.tree.children[tree_len];
+    t.not(new_element, undefined);
+    t.is(new_element.nodeName.toLowerCase(), "li");
+    let new_element_input = new_element.children[0];
+    t.not(new_element_input, undefined);
+    t.is(new_element_input.nodeName.toLowerCase(), "input");
+    new_element_input.value = '          ';
+
+    //Try clicks over input. It should do nothing
+    new_element_input.dispatchEvent(context_event);
+    t.true(UI.context_menu.className.includes('hidden'));
+    t.is(new_element_input.parentNode, new_element);
+    t.is(tree_len + 1, UI.tree.children.length);
+    new_element_input.click();
+    t.is(new_element_input.parentNode, new_element);
+    t.is(tree_len + 1, UI.tree.children.length);
+
+    //Finish edit without any value.
+    new_element_input.dispatchEvent(create_enter_event());
+
+    //Len should not be changed.
+    t.is(tree_len, UI.tree.children.length);
+
 });
 
 test.serial('Select of Tree container should not trigger contextmenu', async t => {

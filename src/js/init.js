@@ -91,21 +91,32 @@ function stop_current_actions() {
 }
 
 //Closes context menu on left-click
-UI.tree.addEventListener('click', stop_current_actions);
+UI.tree.addEventListener('click', function(event) {
+    if (UI.editable === event.target) return;
+
+    stop_current_actions();
+});
 
 //Opens context menu relative to mouse pointer position.
 UI.tree.addEventListener('contextmenu', function(event) {
+    let target = event.target;
     //Skip on container.
-    if (event.target === UI.tree) return;
+    if (target === UI.tree) return;
+    else if (UI.editable !== null) {
+        //If we're in process of editing then user might select temporary input.
+        //mendoukara do nothing.
+        if (UI.editable === target) return;
+
+        UI.stop_edit();
+    }
 
     event.preventDefault();
     event.stopPropagation();
-    stop_current_actions();
 
     //In some cases Our target may be sub-list of element (when clicking left empty space).
     //Since I'm rather lazy we shall go with using its parent rather than  attempting to calculate
-    //position of elemen right to the position click.
-    UI.selection = event.target.classList.contains("tree__sub") ? event.target.parentNode : event.target;
+    //position of element right to the position click.
+    UI.selection = target.classList.contains("tree__sub") ? target.parentNode : target;
 
     UI.context_menu.style.left = event.clientX + 'px';
     UI.context_menu.style.top = event.clientY + 'px';

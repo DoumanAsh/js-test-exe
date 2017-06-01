@@ -82,7 +82,7 @@ export function make_element_editable(element) {
  * @returns {Object} DOM of Tree's element.
  */
 export function make_editable_static(element) {
-    const value = element.value;
+    const value = element.value.trim();
     const parent = element.parentNode;
 
     parent.removeChild(element);
